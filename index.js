@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const User = require("./model/userModel");
 const cookieParser = require("cookie-parser");
+const auth = require("./middleware/auth");
 require("dotenv").config();
 require("./dbConfig/db").connect();
 
@@ -17,6 +18,7 @@ app.get("/", (req, res) => {
   res.send("working...");
 });
 
+// register
 app.post("/register", async (req, res) => {
   const { firstname, lastname, email, password } = req.body;
   if (!(firstname && lastname && email && password)) {
@@ -66,8 +68,19 @@ app.post("/login", async (req, res) => {
     res
       .status(200)
       .cookie("token", token, options)
-      .json({ message: "0successfully signed ", token, user });
+      .json({ message: "successfully signed ", token, user });
   }
 });
+
+app.get("/dashboard" ,auth, (req,res) =>{
+  // console.log(req.user);
+  res.send("Welcome to dashboard. ")
+})
+
+app.get("/settings" ,auth ,  (req,res) =>{
+
+  res.send("Welcome to Settings . ")
+})
+
 
 app.listen(PORT, () => console.log("App is running "));
